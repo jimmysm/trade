@@ -1,5 +1,12 @@
 import csv
 import numpy as np
+import numpy
+import pandas as pd
+import talib
+from talib import MA_Type
+import  random
+
+close = numpy.random.random(100)
 
 
 class createIndex:
@@ -84,6 +91,20 @@ class createIndex:
             boll_data.append(boll_data_temp)
         return boll_data
 
+    def get_macd(self):
+        close = numpy.random.random(100)
+        #计算收盘价的一个简单移动平均数SMA:
+        output = talib.SMA(close)
+
+        #计算布林线，三指数移动平均：
+        upper, middle, lower = talib.BBANDS(close, matype=MA_Type.T3)
+        print('upper:',upper, 'middle',middle, 'lower',lower)
+        #MACD利用收盘价的短期（常用为12日）指数移动平均线与长期（常用为26日）指数移动平均线之间的聚合与分离状况，对买进、卖出时
+        dif, dem, histogram = talib.MACD(close, fastperiod=12, slowperiod=26, signalperiod=9)
+        print('macd:',dif, dem, histogram )
+
+        #计算收盘价的动量，时间为5：
+        output = talib.MOM(close, timeperiod=5)
     def analyze_boll(self, result_data, full_data):
         time = 0
         for i in range(len(result_data)):
@@ -102,8 +123,9 @@ class createIndex:
 
 if __name__ == '__main__':
     bn = createIndex(14400000)
-    result_data, full_data = bn.get_data()
-    print(result_data,'\n',full_data)
+    bn.get_macd()
+    # result_data, full_data = bn.get_data()
+    # print(result_data,'\n',full_data)
     # boll_data = bn.get_boll(result_data)
     # with open('test3.csv', 'w+', encoding='UTF-8') as f:
     #     f_csv = csv.writer(f)
